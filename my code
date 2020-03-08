@@ -1,0 +1,25 @@
+import json
+from watson_developer_cloud import VisualRecognitionV3
+
+customClasses={"trash":"trash that the user has collected","plant":"a plant that the user is growing","water":"a reuseable water bottle"}   #classes available
+
+visual_recognition = VisualRecognitionV3(
+    '2018-03-19',
+    iam_apikey='HNbW--lRZ1B2o3OASni3GgGb0c-crbXYvei3QH1tkLKS') #api key
+
+with open('./demo.jpg', 'rb') as images_file:  #open the image to be identified
+    classes = visual_recognition.classify(
+        images_file,
+        threshold='0.7',  #choose image threshold 0<x<1
+	classifier_ids='DefaultCustomModel_815064111').get_result()
+info=(json.dumps(classes, indent=2))
+#print(info)
+data=info.split(" ")
+for line in range(len(data)):   #seperate the dumped info
+    if "class" in data[line]:
+        for x in customClasses:
+            if x in data[line+1]:
+               print("")
+               print("the image is of "+customClasses[x])
+    if "score" in data[line]:
+        print("it got a reliability score in that class of "+data[line+1])
